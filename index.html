@@ -56,12 +56,12 @@
         <p>&copy; 2024 Hotel Management System</p>
     </footer>
     <script>
-        const SHEET_ID = '1N-gHgwQInPXJJE1NUCjVod4Mlrne9qmxlv1_yMPYXwY'; // Replace with your actual sheet ID
-        const API_KEY = 'AIzaSyCy_6xXt3ORFzeGYap7jHcG5ffzUHCau9Q'; // Replace with your actual API key
+        const SHEET_ID = 'YOUR_SHEET_ID'; // Replace with your actual sheet ID
+        const API_KEY = 'YOUR_API_KEY'; // Replace with your actual API key
         const BASE_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/`;
 
         async function addExpense(data) {
-            const range = 'Expenses!A:D'; // Adjust range as needed
+            const range = 'Expenses!A:C'; // Adjust range as needed
             const url = `${BASE_URL}${range}:append?valueInputOption=USER_ENTERED&key=${API_KEY}`;
 
             const response = await fetch(url, {

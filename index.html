@@ -56,13 +56,18 @@
         <p>&copy; 2024 Hotel Management System</p>
     </footer>
     <script>
-        const SHEET_ID = 'YOUR_SHEET_ID'; // Replace with your actual sheet ID
-        const API_KEY = 'YOUR_API_KEY'; // Replace with your actual API key
-        const BASE_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/`;
+        const EXPENSES_SHEET_ID = '1N-gHgwQInPXJJE1NUCjVod4Mlrne9qmxlv1_yMPYXwY'; // Replace with your actual expenses sheet ID
+        const PURCHASES_SHEET_ID = '1uAgeXX3YS320moHL7kP-NJA04WdsYJHLoET8sJo2-Xw'; // Replace with your actual purchases sheet ID
+        const API_KEY = 'AIzaSyARaqrxO_Q58vALp01ijHAGS9BUx2mt4LM'; // Replace with your actual API key
 
+        // Base URLs for Google Sheets API
+        const EXPENSES_BASE_URL = `https://sheets.googleapis.com/v4/spreadsheets/${EXPENSES_SHEET_ID}/values/`;
+        const PURCHASES_BASE_URL = `https://sheets.googleapis.com/v4/spreadsheets/${PURCHASES_SHEET_ID}/values/`;
+
+        // Function to add an expense to the "Expenses" sheet
         async function addExpense(data) {
-            const range = 'Expenses!A:C'; // Adjust range as needed
-            const url = `${BASE_URL}${range}:append?valueInputOption=USER_ENTERED&key=${API_KEY}`;
+            const range = 'Sheet1!A:C'; // Adjust sheet name and range as needed
+            const url = `${EXPENSES_BASE_URL}${range}:append?valueInputOption=USER_ENTERED&key=${API_KEY}`;
 
             const response = await fetch(url, {
                 method: 'POST',
@@ -81,9 +86,10 @@
             }
         }
 
+        // Function to add a purchase to the "Purchases" sheet
         async function addPurchase(data) {
-            const range = 'Purchases!A:E'; // Adjust range as needed
-            const url = `${BASE_URL}${range}:append?valueInputOption=USER_ENTERED&key=${API_KEY}`;
+            const range = 'Sheet1!A:E'; // Adjust sheet name and range as needed
+            const url = `${PURCHASES_BASE_URL}${range}:append?valueInputOption=USER_ENTERED&key=${API_KEY}`;
 
             const response = await fetch(url, {
                 method: 'POST',
@@ -92,7 +98,7 @@
                 },
                 body: JSON.stringify({
                     values: [
-                        [data.date, data.itemName, data.quantity, data.price]
+                        [data.date, data.itemName, data.quantity, data.price, (data.quantity * data.price)]
                     ],
                 }),
             });

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Management Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Hotel Management Dashboard</h1>
+        <nav>
+            <ul>
+                <li><a href="#" onclick="showSection('recordExpense')">Record Expense</a></li>
+                <li><a href="#" onclick="showSection('recordPurchase')">Record Purchase</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="recordExpense" class="hidden">
+            <h2>Record Expense</h2>
+            <form id="expenseForm">
+                <label for="expenseDate">Date:</label>
+                <input type="date" id="expenseDate" required>
+                
+                <label for="expenseDescription">Description:</label>
+                <input type="text" id="expenseDescription" required>
+                
+                <label for="expenseAmount">Amount:</label>
+                <input type="number" id="expenseAmount" required>
+                
+                <button type="submit">Record Expense</button>
+            </form>
+        </section>
+
+        <section id="recordPurchase" class="hidden">
+            <h2>Record Purchase</h2>
+            <form id="purchaseForm">
+                <label for="purchaseDate">Date:</label>
+                <input type="date" id="purchaseDate" required>
+                
+                <label for="purchaseItemName">Item Name:</label>
+                <input type="text" id="purchaseItemName" required>
+                
+                <label for="purchaseQuantity">Quantity:</label>
+                <input type="number" id="purchaseQuantity" required>
+                
+                <label for="purchasePrice">Price:</label>
+                <input type="number" id="purchasePrice" required>
+                
+                <button type="submit">Record Purchase</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Hotel Management System</p>
+    </footer>
+    <script>
+        const SHEET_ID = '1N-gHgwQInPXJJE1NUCjVod4Mlrne9qmxlv1_yMPYXwY'; // Replace with your actual sheet ID
+        const API_KEY = 'AIzaSyCy_6xXt3ORFzeGYap7jHcG5ffzUHCau9Q'; // Replace with your actual API key
+        const BASE_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/`;
+
+        async function addExpense(data) {
+            const range = 'Expenses!A:D'; // Adjust range as needed
+            const url = `${BASE_URL}${range}:append?valueInputOption=USER_ENTERED&key=${API_KEY}`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    values: [
+                        [data.date, data.description, data.amount]
+                    ],
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add expense');
+            }
+        }
+
+        async function addPurchase(data) {
+            const range = 'Purchases!A:E'; // Adjust range as needed
+            const url = `${BASE_URL}${range}:append?valueInputOption=USER_ENTERED&key=${API_KEY}`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    values: [
+                        [data.date, data.itemName, data.quantity, data.price]
+                    ],
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add purchase');
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const expenseForm = document.getElementById("expenseForm");
+            const purchaseForm = document.getElementById("purchaseForm");
+
+            expenseForm.addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                const date = document.getElementById("expenseDate").value;
+                const description = document.getElementById("expenseDescription").value;
+                const amount = document.getElementById("expenseAmount").value;
+
+                try {
+                    await addExpense({ date, description, amount });
+                    alert("Expense recorded!");
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Failed to record expense.");
+                }
+                expenseForm.reset();
+            });
+
+            purchaseForm.addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                const date = document.getElementById("purchaseDate").value;
+                const itemName = document.getElementById("purchaseItemName").value;
+                const quantity = document.getElementById("purchaseQuantity").value;
+                const price = document.getElementById("purchasePrice").value;
+
+                try {
+                    await addPurchase({ date, itemName, quantity, price });
+                    alert("Purchase recorded!");
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Failed to record purchase.");
+                }
+                purchaseForm.reset();
+            });
+        });
+
+        function showSection(sectionId) {
+            document.querySelectorAll("section").forEach((section) => {
+                section.classList.add("hidden");
+            });
+            document.getElementById(sectionId).classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
